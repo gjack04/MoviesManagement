@@ -213,6 +213,15 @@ namespace MoviesManagement.Models
             return entity;
         }
 
+        public ActivityRole MapModelToEntity(ActivityRoleModel model)
+        {
+            ActivityRole entity = new ActivityRole()
+            {
+
+            };
+            return entity;
+        }
+
         #endregion
     }
 }

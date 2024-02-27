@@ -34,7 +34,12 @@ namespace MoviesManagement.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var list = _ctx.ActivityRoles.Include()
+            var item = _ctx.ActivityRoles.Include(x => x.Activities.Select(y => y.Employee).Distinct().ToList()).SingleOrDefault(a => a.ActivityRoleId == id);
+            if(item == null)
+                return BadRequest();
+            return Ok(_mapper.MapEntityToModel(item));
         }
+
+
     }
 }
