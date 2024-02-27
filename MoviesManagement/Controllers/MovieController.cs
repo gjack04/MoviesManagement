@@ -116,7 +116,10 @@ namespace MoviesManagement.Controllers
             putMovie.AgeLimitId = model.AgeLimitId;
             putMovie.Title = model.Title;
             putMovie.DurationMins = model.DurationMins;
-            putMovie.
+            putMovie.ImdbId = model.ImdbId;
+            putMovie.AgeLimit.Description = model.AgeLimit;
+            putMovie.Technologies = model.Technologies?.ConvertAll(_mapper.MapModelToEntity);
+            putMovie.Projections = model.Projections?.ConvertAll(_mapper.MapModelToEntity);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
     }

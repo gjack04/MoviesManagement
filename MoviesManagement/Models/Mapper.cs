@@ -69,10 +69,50 @@ namespace MoviesManagement.Models
                 ActivityRoleId = entity.ActivityRoleId,
                 EmployeeId = entity.EmployeeId,
                 ProjectionId = entity.ProjectionId,
-                RoomName = entity.Projection.Room.Name,
-                
+                RoomName = entity.Projection.Room.Name, 
                 Start = entity.Projection.Start,
                 Description = entity.ActivityRole.Description,
+            };
+            return model;
+        }
+
+        public ProjectionModel MapEntityToModelProjection(Projection entity)
+        {
+            ProjectionModel model = new ProjectionModel()
+            {
+                ProjectionId = entity.ProjectionId,
+                MovieId = entity.MovieId,
+                RoomId = entity.RoomId,
+                IsDeleted = entity.IsDeleted,
+                FreeBy = entity.FreeBy,
+                Start = entity.Start,
+                ProjectionsActivities = entity.Activities?.ConvertAll(MapEntityToModelActivity)
+            };
+            return model;
+        }
+        
+        public ActivityProjectionModel MapEntityToModelActivity(ProjectionActivity entity)
+        {
+            ActivityProjectionModel model = new ActivityProjectionModel()
+            {
+                EmployeeId = entity.EmployeeId,
+                ActivityRoleId = entity.ActivityRoleId,
+                ProjectionId = entity.ProjectionId,
+                ActivityRoleDescription = entity.ActivityRole.Description,
+                EmployeeName = entity.Employee.Name,
+                EmployeeSurname = entity.Employee.Surname
+            };
+            return model;
+        }
+
+        public ActivityRoleModel MapEntityToModel(ActivityRole entity)
+        {
+            var temp = entity.Activities?.Select(x => x.Employee).Distinct().ToList();
+            ActivityRoleModel model = new ActivityRoleModel()
+            {
+                Id = entity.ActivityRoleId,
+                Description = entity.Description,
+                IsDeleted = entity.IsDeleted
             };
             return model;
         }
@@ -143,6 +183,32 @@ namespace MoviesManagement.Models
                 EmployeeId = model.EmployeeId,
                 ProjectionId = model.ProjectionId,
                 ActivityRoleId= model.ActivityRoleId
+            };
+            return entity;
+        }
+
+        public ProjectionActivity MapModelToEntityActivity(ActivityProjectionModel model)
+        {
+            ProjectionActivity entity = new ProjectionActivity()
+            {
+                ActivityRoleId = model.ActivityRoleId,
+                EmployeeId = model.EmployeeId,
+                ProjectionId = model.ProjectionId,
+            };
+            return entity;
+        }
+
+        public Projection MapModelToEntityProjection(ProjectionModel model)
+        {
+            Projection entity = new Projection()
+            {
+                ProjectionId = model.ProjectionId,
+                RoomId = model.RoomId,
+                MovieId = model.MovieId,
+                FreeBy = model.FreeBy,
+                Start = model.Start,
+                IsDeleted = model.IsDeleted,
+                Activities = model.ProjectionsActivities?.ConvertAll(MapModelToEntityActivity)
             };
             return entity;
         }
