@@ -14,7 +14,11 @@ namespace MoviesManagement.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly Mapper _mapper;
 
-        public ActivityRoleController(MoviesDbContext ctx, ILogger<EmployeeController> logger, Mapper mapper)
+        public ActivityRoleController(
+            MoviesDbContext ctx,
+            ILogger<EmployeeController> logger,
+            Mapper mapper
+        )
         {
             _ctx = ctx;
             _mapper = mapper;
@@ -24,8 +28,15 @@ namespace MoviesManagement.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
+<<<<<<< HEAD
+            var list = _ctx.ActivityRoles.Include(x => x.Activities)
+                .ThenInclude(x => x.Employee)
+                .ToList();
+            list.Select(y => y.Activities.Select(z => z.Employee)).Distinct().ToList();
+=======
             var list = _ctx.ActivityRoles.Include(x => x.Activities).ThenInclude(x => x.Employee).ToList();
             //list.Select(y => y.Activities.Select( z => z.Employee)).Distinct().ToList();
+>>>>>>> fbd3d538c4da40645bac7bee7bfc7e6b58c560dc
             if (!list.Any())
                 return BadRequest();
             return Ok(list.ConvertAll(_mapper.MapEntityToModel));
@@ -35,8 +46,10 @@ namespace MoviesManagement.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var item = _ctx.ActivityRoles.Include(x => x.Activities).ThenInclude(x => x.Employee).SingleOrDefault(a => a.ActivityRoleId == id);
-            if(item == null)
+            var item = _ctx.ActivityRoles.Include(x => x.Activities)
+                .ThenInclude(x => x.Employee)
+                .SingleOrDefault(a => a.ActivityRoleId == id);
+            if (item == null)
                 return BadRequest();
             return Ok(item);
         }
@@ -53,7 +66,7 @@ namespace MoviesManagement.Controllers
         public IActionResult Put(ActivityRoleModel model)
         {
             var entity = _ctx.ActivityRoles.SingleOrDefault(x => x.ActivityRoleId == model.Id);
-            if(entity == null)
+            if (entity == null)
                 return BadRequest();
             entity.ActivityRoleId = model.Id;
             entity.IsDeleted = model.IsDeleted;
@@ -84,5 +97,15 @@ namespace MoviesManagement.Controllers
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 
+        [HttpDelete]
+        public IActionResult Delete(int id, bool IsDeleted)
+        {
+            ActivityRole? old = _ctx.ActivityRoles.Include(e => e.Activities)
+                .SingleOrDefault(a => a.ActivityRoleId == id);
+            if (old == null)
+                return BadRequest();
+            old.IsDeleted = IsDeleted;
+            return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
+        }
     }
 }

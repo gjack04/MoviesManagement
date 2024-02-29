@@ -6,6 +6,42 @@ namespace MoviesManagement.Models
     {
         #region MapEntityToModel
 
+        public TechnologyModel MapEntityToModel(Technology entity)
+        {
+            TechnologyModel model = new TechnologyModel()
+            {
+                TechnologyId = entity.TechnologyId,
+                IsDeleted = entity.IsDeleted,
+                Name = entity.Name,
+                TechnologyType = entity.TechnologyType,
+                TechnologyRoom = entity?.Rooms.ConvertAll(MapEntityToModel)
+            };
+            return model;
+        }
+
+        public TechnologyRoomModel MapEntityToModel(Room entity)
+        {
+            TechnologyRoomModel model = new TechnologyRoomModel()
+            {
+                CleanTimeMins = entity.CleanTimeMins,
+                IsDeleted = entity.IsDeleted,
+                Name = entity.Name,
+                RoomId = entity.RoomId
+            };
+            return model;
+        }
+
+        public ProjectionActivityModel MapModelToEntity(ProjectionActivity entity)
+        {
+            var model = new ProjectionActivityModel()
+            {
+                ActivityRoleId = entity.ActivityRoleId,
+                EmployeeId = entity.EmployeeId,
+                ProjectionId = entity.ProjectionId,
+            };
+            return model;
+        }
+
         public EmployeeModel MapEntityToModel(Employee entity)
         {
             EmployeeModel model = new EmployeeModel()
@@ -14,7 +50,7 @@ namespace MoviesManagement.Models
                 Name = entity.Name,
                 Surname = entity.Surname,
                 IsDeleted = entity.IsDeleted,
-                employeeProjectionModels = entity.Activities?.ConvertAll(MapEntityToModel)                
+                employeeProjectionModels = entity.Activities?.ConvertAll(MapEntityToModel)
             };
 
             return model;
@@ -51,7 +87,13 @@ namespace MoviesManagement.Models
             return model;
         }
 
-        public ItemModel MapEntityToModel(Technology entity)
+        public ItemModel MapEntityToModel(AgeLimit entity)
+        {
+            ItemModel model = new ItemModel() { Id = entity.AgeLimitId, Name = entity.Description };
+            return model;
+        }
+
+        public ItemModel MapEntityToModelItem(Technology entity)
         {
             ItemModel model = new ItemModel()
             {
@@ -69,7 +111,7 @@ namespace MoviesManagement.Models
                 ActivityRoleId = entity.ActivityRoleId,
                 EmployeeId = entity.EmployeeId,
                 ProjectionId = entity.ProjectionId,
-                RoomName = entity.Projection.Room.Name, 
+                RoomName = entity.Projection.Room.Name,
                 Start = entity.Projection.Start,
                 Description = entity.ActivityRole.Description,
             };
@@ -90,7 +132,7 @@ namespace MoviesManagement.Models
             };
             return model;
         }
-        
+
         public ActivityProjectionModel MapEntityToModelActivity(ProjectionActivity entity)
         {
             ActivityProjectionModel model = new ActivityProjectionModel()
@@ -101,7 +143,7 @@ namespace MoviesManagement.Models
             };
             return model;
         }
-            
+
         public ActivityRoleModel MapEntityToModel(ActivityRole entity)
         {
             ActivityRoleModel model = new ActivityRoleModel()
@@ -118,6 +160,18 @@ namespace MoviesManagement.Models
 
         #region MapModelToEntity
 
+
+        public ProjectionActivity MapModelToEntity(ProjectionActivityModel model)
+        {
+            var entity = new ProjectionActivity()
+            {
+                ActivityRoleId = model.ActivityRoleId,
+                EmployeeId = model.EmployeeId,
+                ProjectionId = model.ProjectionId,
+            };
+            return entity;
+        }
+
         public Employee MapModelToEntity(EmployeeModel model)
         {
             Employee entity = new Employee()
@@ -131,15 +185,27 @@ namespace MoviesManagement.Models
 
             return entity;
         }
-        
-        public Technology MapModelToEntity(ItemModel model)
+
+        public Technology MapModelToEntity(TechnologyModel model)
         {
             Technology entity = new Technology()
             {
-                TechnologyId = model.Id,
+                TechnologyId = model.TechnologyId,
                 Name = model.Name,
-                TechnologyType = model.Description,
+                Rooms = model?.TechnologyRoom.ConvertAll(MapModelToEntity),
                 IsDeleted = model.IsDeleted
+            };
+            return entity;
+        }
+
+        public Room MapModelToEntity(TechnologyRoomModel model)
+        {
+            Room entity = new Room()
+            {
+                CleanTimeMins = model.CleanTimeMins,
+                IsDeleted = model.IsDeleted,
+                Name = model.Name,
+                RoomId = model.RoomId,
             };
             return entity;
         }
@@ -179,7 +245,7 @@ namespace MoviesManagement.Models
             {
                 EmployeeId = model.EmployeeId,
                 ProjectionId = model.ProjectionId,
-                ActivityRoleId= model.ActivityRoleId
+                ActivityRoleId = model.ActivityRoleId
             };
             return entity;
         }
@@ -216,12 +282,11 @@ namespace MoviesManagement.Models
             {
                 ActivityRoleId = model.Id,
                 Description = model.Description,
-                IsDeleted=model.IsDeleted,
+                IsDeleted = model.IsDeleted,
                 Activities = model.Activities.ConvertAll(MapModelToEntityActivity)
             };
             return entity;
         }
-
         #endregion
     }
 }
