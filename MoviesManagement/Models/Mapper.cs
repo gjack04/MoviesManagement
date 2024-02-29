@@ -1,11 +1,14 @@
 ﻿using MoviesManagement.Data;
+using MoviesManagement.Models.New;
 
 namespace MoviesManagement.Models
 {
     public class Mapper
     {
-        #region MapEntityToModel
+        ///////////////////////////////////////////////////////////////////////////
 
+
+        ///////////////////////////////////////////////////////////////////////////
         public TechnologyModel MapEntityToModel(Technology entity)
         {
             TechnologyModel model = new TechnologyModel()
@@ -30,6 +33,13 @@ namespace MoviesManagement.Models
             };
             return model;
         }
+
+        ///////////////////////////////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////
+
 
         public ProjectionActivityModel MapModelToEntity(ProjectionActivity entity)
         {
@@ -156,10 +166,28 @@ namespace MoviesManagement.Models
             return model;
         }
 
-        #endregion
+        public ItemModel MapEntityToModelItem(Movie entity)
+        {
+            ItemModel model = new ItemModel()
+            {
+                Id = entity.MovieId,
+                Name = entity.Title,
+                IsDeleted = entity.IsDeleted
+            };
+            return model;
+        }
 
-        #region MapModelToEntity
-
+        public AgeLimitModel MapEntityToModelFull(AgeLimit entity)
+        {
+            AgeLimitModel model = new AgeLimitModel()
+            {
+                AgeLimitId = entity.AgeLimitId,
+                Description = entity.Description,
+                IsDeleted = entity.IsDeleted,
+                MoviesItem = entity?.Movies.ConvertAll(MapEntityToModelItem),
+            };
+            return model;
+        }
 
         public ProjectionActivity MapModelToEntity(ProjectionActivityModel model)
         {
@@ -304,12 +332,34 @@ namespace MoviesManagement.Models
         {
             AgeLimit entity = new AgeLimit()
             {
-                 AgeLimitId = model.Id,
-                 Description = model.Description,
-                 IsDeleted = model.IsDeleted
+                AgeLimitId = model.Id,
+                Description = model.Description,
+                IsDeleted = model.IsDeleted
             };
             return entity;
         }
-        #endregion
+
+        public AgeLimit MapModelToEntity(AgeLimitModel model)
+        {
+            AgeLimit entity = new AgeLimit()
+            {
+                AgeLimitId = model.AgeLimitId,
+                Description = model.Description,
+                IsDeleted = model.IsDeleted,
+                Movies = model.MoviesItem.ConvertAll(MapModelToEntityMovie)
+            };
+            return entity;
+        }
+
+        public Movie MapModelToEntityMovie(ItemModel model)
+        {
+            Movie entity = new Movie()
+            {
+                Title = model.Name,
+                IsDeleted = model.IsDeleted,
+                MovieId = model.Id,
+            };
+            return entity;
+        }
     }
 }

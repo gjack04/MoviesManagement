@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesManagement.Data;
 using MoviesManagement.Models;
-using System.Runtime.InteropServices;
 
 namespace MoviesManagement.Controllers
 {
@@ -26,13 +26,12 @@ namespace MoviesManagement.Controllers
         [Route("{id}")]
         public IActionResult GetById(int id)
         {
-            Movie? entity = _ctx.Movies
-                .Include(m => m.Technologies)
+            Movie? entity = _ctx.Movies.Include(m => m.Technologies)
                 .Include(m => m.AgeLimit)
                 .Include(m => m.Projections)
                 .ThenInclude(p => p.Room)
                 .SingleOrDefault(m => m.MovieId == id);
-            if(entity == null)
+            if (entity == null)
             {
                 return BadRequest("Film non trovato");
             }
@@ -46,23 +45,18 @@ namespace MoviesManagement.Controllers
             _logger.LogInformation("Ingresso nel metodo GetAll del controller MovieController");
             try
             {
-                List<Movie> movies = _ctx.Movies
-                    .Include(m => m.Technologies)
+                List<Movie> movies = _ctx.Movies.Include(m => m.Technologies)
                     .Include(m => m.AgeLimit)
                     .ToList();
 
-                List<MovieModel> result = movies
-                    .ConvertAll(_mapper.MapEntityToModel);
+                List<MovieModel> result = movies.ConvertAll(_mapper.MapEntityToModel);
 
                 return Ok(result);
-            } 
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
-                    "Si è rotto qualcosa"
-                );
+                return StatusCode(StatusCodes.Status500InternalServerError, "Si è rotto qualcosa");
             }
         }
 
@@ -83,7 +77,7 @@ namespace MoviesManagement.Controllers
         private IActionResult EnableOrDisable(int id, bool action)
         {
             var movie = _ctx.Movies.Include(m => m.Projections)
-                            .SingleOrDefault(m => m.MovieId == id);
+                .SingleOrDefault(m => m.MovieId == id);
             if (movie == null)
                 return BadRequest("Impossibile eliminare il film selezionato");
 
@@ -96,7 +90,7 @@ namespace MoviesManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]MovieModel model)
+        public IActionResult Post([FromBody] MovieModel model)
         {
             model.Id = 0;
             var entity = _mapper.MapModelToEntity(model);
@@ -105,7 +99,7 @@ namespace MoviesManagement.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody]MovieModel model)
+        public IActionResult Put([FromBody] MovieModel model)
         {
             var putMovie = _ctx.Movies.SingleOrDefault(x => x.MovieId == model.Id);
             if (putMovie == null)
@@ -117,7 +111,6 @@ namespace MoviesManagement.Controllers
             putMovie.Title = model.Title;
             putMovie.DurationMins = model.DurationMins;
             putMovie.ImdbId = model.ImdbId;
-            putMovie.AgeLimit.Description = model.AgeLimit;
             putMovie.Technologies = model.Technologies?.ConvertAll(_mapper.MapModelToEntity);
             putMovie.Projections = model.Projections?.ConvertAll(_mapper.MapModelToEntity);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();

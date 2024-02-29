@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesManagement.Data;
 using MoviesManagement.Models;
+using MoviesManagement.Models.New;
 
 namespace MoviesManagement.Controllers
 {
@@ -28,37 +29,38 @@ namespace MoviesManagement.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(_ctx.AgeLimits.Include(m => m.Movies).ToList());
+            List<AgeLimit> entity = _ctx.AgeLimits.Include(m => m.Movies).ToList();
+            return Ok(entity.ConvertAll(_mapper.MapEntityToModelFull));
         }
 
         [HttpGet]
         [Route("{id}")]
         public IActionResult GetId(int id)
         {
-            AgeLimit? entiy = _ctx.AgeLimits.Include(m => m.Movies)
+            AgeLimit? entity = _ctx.AgeLimits.Include(m => m.Movies)
                 .SingleOrDefault(a => a.AgeLimitId == id);
-            if (entiy == null)
+            if (entity == null)
                 return BadRequest("Nessun age limit trovato");
-            return Ok(entiy);
+            return Ok(_mapper.MapEntityToModelFull(entity));
         }
 
         [HttpPost]
-        public IActionResult Post(ItemModel model)
+        public IActionResult Post(AgeLimitModel model)
         {
-            model.Id = 0;
+            model.AgeLimitId = 0;
             _ctx.AgeLimits.Add(_mapper.MapModelToEntity(model));
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 
         [HttpPut]
-        public IActionResult Put(AgeLimit entity)
+        public IActionResult Put(AgeLimitModel model)
         {
-            AgeLimit? old = _ctx.AgeLimits.SingleOrDefault(a => a.AgeLimitId == entity.AgeLimitId);
+            AgeLimit? old = _ctx.AgeLimits.SingleOrDefault(a => a.AgeLimitId == model.AgeLimitId);
             if (old == null)
                 return BadRequest("Nessun age limit trovato");
-            old.Description = entity.Description;
-            old.IsDeleted = entity.IsDeleted;
-            old.Movies = entity.Movies;
+            old.Description = model.Description;
+            old.IsDeleted = model.IsDeleted;
+            old.Movies = model?.MoviesItem.ConvertAll(_mapper.MapModelToEntityMovie);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 
