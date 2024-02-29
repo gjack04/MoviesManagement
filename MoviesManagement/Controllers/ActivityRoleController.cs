@@ -28,15 +28,7 @@ namespace MoviesManagement.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-<<<<<<< HEAD
-            var list = _ctx.ActivityRoles.Include(x => x.Activities)
-                .ThenInclude(x => x.Employee)
-                .ToList();
-            list.Select(y => y.Activities.Select(z => z.Employee)).Distinct().ToList();
-=======
             var list = _ctx.ActivityRoles.Include(x => x.Activities).ThenInclude(x => x.Employee).ToList();
-            //list.Select(y => y.Activities.Select( z => z.Employee)).Distinct().ToList();
->>>>>>> fbd3d538c4da40645bac7bee7bfc7e6b58c560dc
             if (!list.Any())
                 return BadRequest();
             return Ok(list.ConvertAll(_mapper.MapEntityToModel));
@@ -46,9 +38,7 @@ namespace MoviesManagement.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var item = _ctx.ActivityRoles.Include(x => x.Activities)
-                .ThenInclude(x => x.Employee)
-                .SingleOrDefault(a => a.ActivityRoleId == id);
+            var item = _ctx.ActivityRoles.Include(x => x.Activities).ThenInclude(x => x.Employee).SingleOrDefault(a => a.ActivityRoleId == id);
             if (item == null)
                 return BadRequest();
             return Ok(item);
