@@ -299,6 +299,17 @@ namespace MoviesManagement.Models
             };
             return entity;
         }
+
+        public AgeLimit MapModelToEntity(ItemModel model)
+        {
+            AgeLimit entity = new AgeLimit()
+            {
+                 AgeLimitId = model.Id,
+                 Description = model.Description,
+                 IsDeleted = model.IsDeleted
+            };
+            return entity;
+        }
         #endregion
     }
 }
