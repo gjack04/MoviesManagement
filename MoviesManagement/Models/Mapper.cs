@@ -109,7 +109,7 @@ namespace MoviesManagement.Models
                 Id = entity.ActivityRoleId,
                 Description = entity.Description,
                 IsDeleted = entity.IsDeleted,
-                Activities = entity.Activities?.ConvertAll(MapEntityToModelActivity)
+                Activities = entity.Activities.ConvertAll(MapEntityToModelActivity)
             };
             return model;
         }
