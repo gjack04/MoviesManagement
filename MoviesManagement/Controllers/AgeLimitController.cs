@@ -43,10 +43,10 @@ namespace MoviesManagement.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post(AgeLimit entity)
+        public IActionResult Post(ItemModel model)
         {
-            entity.AgeLimitId = 0;
-            _ctx.AgeLimits.Add(entity);
+            model.Id = 0;
+            _ctx.AgeLimits.Add(_mapper.MapModelToEntity(model));
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 
