@@ -9,6 +9,6 @@ namespace MoviesManagement.Models
         public int CleanTimeMins { get; set; }
         public bool IsDeleted { get; set; } = false;
         public List<ProjectionModel>? Projections { get; set; }
-        public List<Technology>? Technologies { get; set; }
+        public List<TechnologyModel>? Technologies { get; set; }
     }
 }

@@ -210,6 +210,18 @@ namespace MoviesManagement.Models
             return entity;
         }
 
+        public Room MapModelToEntity(RoomModel model)
+        {
+            Room entity = new Room()
+            {
+                CleanTimeMins = model.CleanTimeMins,
+                IsDeleted = model.IsDeleted,
+                Name = model.Name,
+                RoomId = model.RoomId,
+            };
+            return entity;
+        }
+
         public Projection MapModelToEntity(MovieProjectionModel model)
         {
             Projection entity = new Projection()
