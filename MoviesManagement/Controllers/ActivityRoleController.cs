@@ -24,7 +24,8 @@ namespace MoviesManagement.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var list = _ctx.ActivityRoles.Include(x => x.Activities.Select(y => y.Employee).Distinct().ToList()).ToList();
+            var list = _ctx.ActivityRoles.Include(x => x.Activities).ThenInclude(x => x.Employee).ToList();
+            list.Select(y => y.Activities.Select( z => z.Employee)).Distinct().ToList();
             if (!list.Any())
                 return BadRequest();
             return Ok(list.ConvertAll(_mapper.MapEntityToModel));
@@ -34,12 +35,55 @@ namespace MoviesManagement.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var item = _ctx.ActivityRoles.Include(x => x.Activities.Select(y => y.Employee).Distinct().ToList()).SingleOrDefault(a => a.ActivityRoleId == id);
+            var item = _ctx.ActivityRoles.Include(x => x.Activities).ThenInclude(x => x.Employee).SingleOrDefault(a => a.ActivityRoleId == id);
             if(item == null)
                 return BadRequest();
+            item.Activities.Select(x => x.Employee).Distinct().ToList();
             return Ok(_mapper.MapEntityToModel(item));
         }
 
+        [HttpPost]
+        public IActionResult Post(ActivityRoleModel model)
+        {
+            var entity = _mapper.MapModelToEntity(model);
+            _ctx.ActivityRoles.Add(entity);
+            return _ctx.SaveChanges() > 0 ? Ok(entity) : BadRequest();
+        }
+
+        [HttpPut]
+        public IActionResult Put(ActivityRoleModel model)
+        {
+            var entity = _ctx.ActivityRoles.SingleOrDefault(x => x.ActivityRoleId == model.Id);
+            if(entity == null)
+                return BadRequest();
+            entity.ActivityRoleId = model.Id;
+            entity.IsDeleted = model.IsDeleted;
+            entity.Description = model.Description;
+            return _ctx.SaveChanges() > 0 ? Ok(entity) : BadRequest();
+        }
+
+        [HttpDelete]
+        [Route("Disable/{id}")]
+        public IActionResult Archive(int id)
+        {
+            return EnableOrDisable(id, true);
+        }
+
+        [HttpDelete]
+        [Route("Enable/{id}")]
+        public IActionResult Reactivate(int id)
+        {
+            return EnableOrDisable(id, false);
+        }
+
+        private IActionResult EnableOrDisable(int id, bool enable)
+        {
+            var entity = _ctx.ActivityRoles.SingleOrDefault(x => x.ActivityRoleId == id);
+            if (entity == null)
+                return BadRequest("Impossibile eliminare il dipendente selezionato");
+            entity.IsDeleted = enable;
+            return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
+        }
 
     }
 }

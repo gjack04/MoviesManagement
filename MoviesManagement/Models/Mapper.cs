@@ -97,22 +97,19 @@ namespace MoviesManagement.Models
             {
                 EmployeeId = entity.EmployeeId,
                 ActivityRoleId = entity.ActivityRoleId,
-                ProjectionId = entity.ProjectionId,
-                ActivityRoleDescription = entity.ActivityRole.Description,
-                EmployeeName = entity.Employee.Name,
-                EmployeeSurname = entity.Employee.Surname
+                ProjectionId = entity.ProjectionId
             };
             return model;
         }
-
+            
         public ActivityRoleModel MapEntityToModel(ActivityRole entity)
         {
-            var temp = entity.Activities?.Select(x => x.Employee).Distinct().ToList();
             ActivityRoleModel model = new ActivityRoleModel()
             {
                 Id = entity.ActivityRoleId,
                 Description = entity.Description,
-                IsDeleted = entity.IsDeleted
+                IsDeleted = entity.IsDeleted,
+                Activities = entity.Activities?.ConvertAll(MapEntityToModelActivity)
             };
             return model;
         }
@@ -217,7 +214,10 @@ namespace MoviesManagement.Models
         {
             ActivityRole entity = new ActivityRole()
             {
-
+                ActivityRoleId = model.Id,
+                Description = model.Description,
+                IsDeleted=model.IsDeleted,
+                Activities = model.Activities.ConvertAll(MapModelToEntityActivity)
             };
             return entity;
         }

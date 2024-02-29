@@ -9,6 +9,5 @@ namespace MoviesManagement.Models
         public string Surname { get; set; }
         public bool IsDeleted { get; set; }
         public List<EmployeeProjectionModel>? employeeProjectionModels { get; set; }
-        //DA COMPLETARE
     }
 }

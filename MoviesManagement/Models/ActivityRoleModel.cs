@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using MoviesManagement.Data;
 
 namespace MoviesManagement.Models
 {
@@ -7,6 +8,6 @@ namespace MoviesManagement.Models
         public int Id { get; set; }
         public string Description { get; set; }
         public bool IsDeleted { get; set; }
-        public List<EmployeeModel> Employees { get; set; }
+        public List<ActivityProjectionModel>? Activities { get; set; }
     }
 }
