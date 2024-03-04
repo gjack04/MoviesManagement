@@ -23,23 +23,6 @@ namespace MoviesManagement.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public IActionResult GetById(int id)
-        {
-            Movie? entity = _ctx.Movies.Include(m => m.Technologies)
-                .Include(m => m.AgeLimit)
-                .Include(m => m.Projections)
-                .ThenInclude(p => p.Room)
-                .SingleOrDefault(m => m.MovieId == id);
-            if (entity == null)
-            {
-                return BadRequest("Film non trovato");
-            }
-            MovieModel model = _mapper.MapEntityToModel(entity);
-            return Ok(model);
-        }
-
-        [HttpGet]
         public IActionResult GetAll()
         {
             _logger.LogInformation("Ingresso nel metodo GetAll del controller MovieController");
@@ -58,6 +41,23 @@ namespace MoviesManagement.Controllers
                 _logger.LogError(ex.Message, ex);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Si è rotto qualcosa");
             }
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult GetById(int id)
+        {
+            Movie? entity = _ctx.Movies.Include(m => m.Technologies)
+                .Include(m => m.AgeLimit)
+                .Include(m => m.Projections)
+                .ThenInclude(p => p.Room)
+                .SingleOrDefault(m => m.MovieId == id);
+            if (entity == null)
+            {
+                return BadRequest("Film non trovato");
+            }
+            MovieModel model = _mapper.MapEntityToModel(entity);
+            return Ok(model);
         }
 
         [HttpDelete]
@@ -94,6 +94,22 @@ namespace MoviesManagement.Controllers
         {
             model.Id = 0;
             var entity = _mapper.MapModelToEntity(model);
+            var tech = model.Technologies.Select(t => t.Id).ToList();
+            var projection = model.Projections.Select(p => p.Id).ToList();
+            entity.Technologies = _ctx.Technologies.Join(
+                tech,
+                r => r.TechnologyId,
+                tr => tr,
+                (r, tr) => r
+            )
+                .ToList();
+            entity.Projections = _ctx.Projections.Join(
+                projection,
+                r => r.ProjectionId,
+                tr => tr,
+                (r, tr) => r
+            )
+                .ToList();
             _ctx.Movies.Add(entity);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }

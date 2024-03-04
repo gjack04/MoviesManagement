@@ -47,7 +47,12 @@ namespace MoviesManagement.Controllers
         public IActionResult Post(TechnologyModel model)
         {
             model.TechnologyId = 0;
-            _ctx.Technologies.Add(_mapper.MapModelToEntity(model));
+            var entity = _mapper.MapModelToEntity(model);
+            var techRooms = model.TechnologyRoom.Select(t => t.RoomId).ToList();
+            //entity.Rooms = _ctx.Rooms.Where(r => techRooms.Any(tr => tr == r.RoomId)).ToList();
+            entity.Rooms = _ctx.Rooms.Join(techRooms, r => r.RoomId, tr => tr, (r, tr) => r)
+                .ToList();
+            _ctx.Technologies.Add(entity);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 
@@ -61,7 +66,8 @@ namespace MoviesManagement.Controllers
             old.Name = model.Name;
             old.IsDeleted = model.IsDeleted;
             old.TechnologyType = model.TechnologyType;
-            old.Rooms = model?.TechnologyRoom.ConvertAll(_mapper.MapModelToEntity);
+            var techRooms = model.TechnologyRoom.Select(t => t.RoomId).ToList();
+            old.Rooms = _ctx.Rooms.Join(techRooms, r => r.RoomId, tr => tr, (r, tr) => r).ToList();
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 

@@ -65,8 +65,8 @@ namespace MoviesManagement.Controllers
             entity.IsDeleted = model.IsDeleted;
             entity.Name = model.Name;
             entity.CleanTimeMins = model.CleanTimeMins;
-            entity.Projections = model?.Projections.ConvertAll(_mapper.MapModelToEntity);
-            entity.Technologies = model?.Technologies.ConvertAll(_mapper.MapModelToEntityTech);
+            entity.Projections = model.Projections?.ConvertAll(_mapper.MapModelToEntity);
+            entity.Technologies = model.Technologies?.ConvertAll(_mapper.MapModelToEntityTech);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 

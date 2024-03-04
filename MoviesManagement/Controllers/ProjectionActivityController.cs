@@ -50,7 +50,6 @@ namespace MoviesManagement.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] ProjectionActivityModel model)
         {
-            model.ProjectionId = 0;
             _ctx.Add(_mapper.MapModelToEntity(model));
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }

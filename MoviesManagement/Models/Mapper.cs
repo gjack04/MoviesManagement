@@ -136,9 +136,9 @@ namespace MoviesManagement.Models
                 ActivityRoleId = entity.ActivityRoleId,
                 EmployeeId = entity.EmployeeId,
                 ProjectionId = entity.ProjectionId,
-                RoomName = entity.Projection.Room.Name,
+                RoomName = entity.Projection?.Room.Name,
                 Start = entity.Projection.Start,
-                Description = entity.ActivityRole.Description,
+                Description = entity.ActivityRole?.Description,
             };
             return model;
         }
@@ -176,7 +176,7 @@ namespace MoviesManagement.Models
                 Id = entity.ActivityRoleId,
                 Description = entity.Description,
                 IsDeleted = entity.IsDeleted,
-                Activities = entity.Activities.ConvertAll(MapEntityToModelActivity)
+                Activities = entity.Activities?.ConvertAll(MapEntityToModelActivity)
             };
             return model;
         }
@@ -199,7 +199,7 @@ namespace MoviesManagement.Models
                 AgeLimitId = entity.AgeLimitId,
                 Description = entity.Description,
                 IsDeleted = entity.IsDeleted,
-                MoviesItem = entity?.Movies.ConvertAll(MapEntityToModelItem),
+                MoviesItem = entity.Movies?.ConvertAll(MapEntityToModelItem),
             };
             return model;
         }
@@ -234,8 +234,9 @@ namespace MoviesManagement.Models
             Technology entity = new Technology()
             {
                 TechnologyId = model.TechnologyId,
+                TechnologyType = model.TechnologyType,
                 Name = model.Name,
-                Rooms = model?.TechnologyRoom.ConvertAll(MapModelToEntity),
+                Rooms = model.TechnologyRoom?.ConvertAll(MapModelToEntity),
                 IsDeleted = model.IsDeleted
             };
             return entity;
@@ -338,7 +339,7 @@ namespace MoviesManagement.Models
                 ActivityRoleId = model.Id,
                 Description = model.Description,
                 IsDeleted = model.IsDeleted,
-                Activities = model.Activities.ConvertAll(MapModelToEntityActivity)
+                Activities = model.Activities?.ConvertAll(MapModelToEntityActivity)
             };
             return entity;
         }
@@ -361,7 +362,7 @@ namespace MoviesManagement.Models
                 AgeLimitId = model.AgeLimitId,
                 Description = model.Description,
                 IsDeleted = model.IsDeleted,
-                Movies = model.MoviesItem.ConvertAll(MapModelToEntityMovie)
+                Movies = model.MoviesItem?.ConvertAll(MapModelToEntityMovie)
             };
             return entity;
         }
@@ -412,9 +413,9 @@ namespace MoviesManagement.Models
                 CleanTimeMins = entity.CleanTimeMins,
                 IsDeleted = entity.IsDeleted,
                 Name = entity.Name,
-                Projections = entity?.Projections.ConvertAll(MapEntityToModelMinimal),
+                Projections = entity.Projections?.ConvertAll(MapEntityToModelMinimal),
                 RoomId = entity.RoomId,
-                Technologies = entity?.Technologies.ConvertAll(MapEntityToModelItem)
+                Technologies = entity.Technologies?.ConvertAll(MapEntityToModelItem)
             };
             return model;
         }
@@ -426,9 +427,9 @@ namespace MoviesManagement.Models
                 CleanTimeMins = model.CleanTimeMins,
                 IsDeleted = model.IsDeleted,
                 Name = model.Name,
-                Projections = model?.Projections.ConvertAll(MapModelToEntity),
+                Projections = model.Projections?.ConvertAll(MapModelToEntity),
                 RoomId = model.RoomId,
-                Technologies = model?.Technologies.ConvertAll(MapModelToEntityTech)
+                Technologies = model.Technologies?.ConvertAll(MapModelToEntityTech)
             };
             return entity;
         }
