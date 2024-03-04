@@ -8,6 +8,6 @@ namespace MoviesManagement.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool IsDeleted { get; set; }
-        public List<EmployeeProjectionModel>? employeeProjectionModels { get; set; }
+        public List<EmployeeProjectionModel>? EmployeeProjections { get; set; }
     }
 }

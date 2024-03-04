@@ -14,7 +14,11 @@ namespace MoviesManagement.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly Mapper _mapper;
 
-        public EmployeeController(MoviesDbContext ctx, ILogger<EmployeeController> logger, Mapper mapper)
+        public EmployeeController(
+            MoviesDbContext ctx,
+            ILogger<EmployeeController> logger,
+            Mapper mapper
+        )
         {
             _ctx = ctx;
             _mapper = mapper;
@@ -34,7 +38,8 @@ namespace MoviesManagement.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var item = _ctx.Employees.Include(a => a.Activities).SingleOrDefault(x => x.EmployeeId == id);
+            var item = _ctx.Employees.Include(a => a.Activities)
+                .SingleOrDefault(x => x.EmployeeId == id);
             if (item == null)
                 return BadRequest();
             return Ok(_mapper.MapEntityToModel(item));
@@ -46,7 +51,7 @@ namespace MoviesManagement.Controllers
             model.Id = 0;
             var entity = _mapper.MapModelToEntity(model);
             _ctx.Employees.Add(entity);
-            return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();            
+            return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
 
         [HttpDelete]
@@ -65,7 +70,8 @@ namespace MoviesManagement.Controllers
 
         private IActionResult EnableOrDisable(int id, bool enable)
         {
-            var employee = _ctx.Employees.Include(m => m.Activities).SingleOrDefault(x => x.EmployeeId == id);
+            var employee = _ctx.Employees.Include(m => m.Activities)
+                .SingleOrDefault(x => x.EmployeeId == id);
             if (employee == null)
                 return BadRequest("Impossibile eliminare il dipendente selezionato");
             employee.IsDeleted = enable;
@@ -74,7 +80,7 @@ namespace MoviesManagement.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody]EmployeeModel model)
+        public IActionResult Put([FromBody] EmployeeModel model)
         {
             var putEmployee = _ctx.Employees.SingleOrDefault(x => x.EmployeeId == model.Id);
             if (putEmployee == null)
@@ -83,7 +89,9 @@ namespace MoviesManagement.Controllers
             putEmployee.Name = model.Name;
             putEmployee.Surname = model.Surname;
             putEmployee.IsDeleted = model.IsDeleted;
-            putEmployee.Activities = model.employeeProjectionModels?.ConvertAll(_mapper.MapModelToEntity);
+            putEmployee.Activities = model.EmployeeProjections?.ConvertAll(
+                _mapper.MapModelToEntity
+            );
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }
     }
