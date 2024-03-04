@@ -1,4 +1,5 @@
 ﻿using MoviesManagement.Data;
+using MoviesManagement.Models.New;
 
 namespace MoviesManagement.Models
 {
@@ -8,7 +9,7 @@ namespace MoviesManagement.Models
         public string Name { get; set; }
         public int CleanTimeMins { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public List<ProjectionModel>? Projections { get; set; }
-        public List<TechnologyModel>? Technologies { get; set; }
+        public List<RoomProjectionModel>? Projections { get; set; }
+        public List<ItemModel>? Technologies { get; set; }
     }
 }

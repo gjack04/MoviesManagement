@@ -111,7 +111,7 @@ namespace MoviesManagement.Controllers
             putMovie.Title = model.Title;
             putMovie.DurationMins = model.DurationMins;
             putMovie.ImdbId = model.ImdbId;
-            putMovie.Technologies = model.Technologies?.ConvertAll(_mapper.MapModelToEntity);
+            putMovie.Technologies = model.Technologies?.ConvertAll(_mapper.MapModelToEntityTech);
             putMovie.Projections = model.Projections?.ConvertAll(_mapper.MapModelToEntity);
             return _ctx.SaveChanges() > 0 ? Ok() : BadRequest();
         }

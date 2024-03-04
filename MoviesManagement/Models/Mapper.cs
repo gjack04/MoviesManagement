@@ -5,10 +5,10 @@ namespace MoviesManagement.Models
 {
     public class Mapper
     {
-        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////ACTIVITY ROLE//////////////////////////////////
 
 
-        ///////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////AGE LIMIT/////////////////////////////////
         public TechnologyModel MapEntityToModel(Technology entity)
         {
             TechnologyModel model = new TechnologyModel()
@@ -34,12 +34,15 @@ namespace MoviesManagement.Models
             return model;
         }
 
-        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////EMPLOYEE/////////////////////////////////
 
-        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////MOVIE/////////////////////////////
 
-        ///////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////PROJECTION////////////////////////////
 
+        //////////////////////////////////////ROOM////////////////////////////
+
+        //////////////////////////////////////TECHNOLOGY////////////////////////////
 
         public ProjectionActivityModel MapModelToEntity(ProjectionActivity entity)
         {
@@ -77,7 +80,7 @@ namespace MoviesManagement.Models
                 DurationMins = entity.DurationMins,
                 ImdbId = entity.ImdbId,
                 IsDeleted = entity.IsDeleted,
-                Technologies = entity.Technologies?.ConvertAll(MapEntityToModel),
+                Technologies = entity.Technologies?.ConvertAll(MapEntityToModelItem),
                 Projections = entity.Projections?.ConvertAll(MapEntityToModel)
             };
             return model;
@@ -112,6 +115,18 @@ namespace MoviesManagement.Models
                 Description = entity.TechnologyType
             };
             return model;
+        }
+
+        public Technology MapModelToEntityTech(ItemModel model)
+        {
+            Technology entity = new Technology()
+            {
+                Name = model.Name,
+                IsDeleted = model.IsDeleted,
+                TechnologyId = model.Id,
+                TechnologyType = model.Description
+            };
+            return entity;
         }
 
         public EmployeeProjectionModel MapEntityToModel(ProjectionActivity entity)
@@ -273,7 +288,7 @@ namespace MoviesManagement.Models
                 AgeLimitId = model.AgeLimitId,
                 DurationMins = model.DurationMins,
                 IsDeleted = model.IsDeleted,
-                Technologies = model.Technologies?.ConvertAll(MapModelToEntity),
+                Technologies = model.Technologies?.ConvertAll(MapModelToEntityTech),
                 Projections = model.Projections?.ConvertAll(MapModelToEntity)
             };
             return entity;
@@ -358,6 +373,62 @@ namespace MoviesManagement.Models
                 Title = model.Name,
                 IsDeleted = model.IsDeleted,
                 MovieId = model.Id,
+            };
+            return entity;
+        }
+
+        public RoomProjectionModel MapEntityToModelMinimal(Projection entity)
+        {
+            RoomProjectionModel model = new RoomProjectionModel()
+            {
+                FreeBy = entity.FreeBy,
+                IsDeleted = entity.IsDeleted,
+                MovieId = entity.MovieId,
+                ProjectionId = entity.ProjectionId,
+                RoomId = entity.RoomId,
+                Start = entity.Start
+            };
+            return model;
+        }
+
+        public Projection MapModelToEntity(RoomProjectionModel model)
+        {
+            Projection entity = new Projection()
+            {
+                Start = model.Start,
+                RoomId = model.RoomId,
+                ProjectionId = model.ProjectionId,
+                MovieId = model.MovieId,
+                FreeBy = model.FreeBy,
+                IsDeleted = model.IsDeleted,
+            };
+            return entity;
+        }
+
+        public RoomModel MapEntityToModelRoom(Room entity)
+        {
+            RoomModel model = new RoomModel()
+            {
+                CleanTimeMins = entity.CleanTimeMins,
+                IsDeleted = entity.IsDeleted,
+                Name = entity.Name,
+                Projections = entity?.Projections.ConvertAll(MapEntityToModelMinimal),
+                RoomId = entity.RoomId,
+                Technologies = entity?.Technologies.ConvertAll(MapEntityToModelItem)
+            };
+            return model;
+        }
+
+        public Room MapModelToEntityFull(RoomModel model)
+        {
+            Room entity = new Room()
+            {
+                CleanTimeMins = model.CleanTimeMins,
+                IsDeleted = model.IsDeleted,
+                Name = model.Name,
+                Projections = model?.Projections.ConvertAll(MapModelToEntity),
+                RoomId = model.RoomId,
+                Technologies = model?.Technologies.ConvertAll(MapModelToEntityTech)
             };
             return entity;
         }

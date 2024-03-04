@@ -39,7 +39,7 @@ namespace MoviesManagement.Controllers
             Technology? entiy = _ctx.Technologies.Include(r => r.Rooms)
                 .SingleOrDefault(a => a.TechnologyId == id);
             if (entiy == null)
-                return BadRequest("Nessuna tecnologia trovato");
+                return BadRequest("Nessuna tecnologia trovata");
             return Ok(_mapper.MapEntityToModel(entiy));
         }
 
